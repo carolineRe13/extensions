@@ -127,7 +127,7 @@ $CoberturaReport.coverage.packages.package | ForEach-Object {
     }
 }
 
-if ($Kudos.Count -eq 0)
+if ($Kudos.Count -ne 0)
 {
     Write-Host ""
     Write-Warning "Good job! The coverage increased"
