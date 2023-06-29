@@ -108,7 +108,7 @@ $CoberturaReport.coverage.packages.package | ForEach-Object {
         }
 
         # Detect the over-coverage
-        $lowerstReported = if ($LineCoverage -lt $BranchCoverage) { $LineCoverage } else { $BranchCoverage };
+        [int] $lowerstReported = if ($LineCoverage -lt $BranchCoverage) { $LineCoverage } else { $BranchCoverage };
         if ($MinCodeCoverage -lt $lowerstReported) {
             [void]$Kudos.Add(
                 (
@@ -127,10 +127,11 @@ $CoberturaReport.coverage.packages.package | ForEach-Object {
     }
 }
 
+$esc = [char]27
 if ($Kudos.Count -ne 0)
 {
     Write-Header -message "`r`nGood job! The coverage increased" -isError $false
-    $Kudos | Sort-Object Project | Format-Table "Project", @{ Name="Expected"; Expression="Expected"; Width=10 }, @{ Name="Actual"; Expression="Actual"; Width=10 } -AutoSize -Wrap
+    $Kudos | Sort-Object Project | Format-Table "Project", @{ Name="Expected"; Expression="Expected"; Width=10 }, @{ Name="Actual"; Expression="$esc[1m$esc[0;32m$($_.Actual)$esc[0m"; Width=10 } -AutoSize -Wrap
     Write-Host "##vso[task.logissue type=warning;]Good job! The coverage increased, please update your projects"
 }
 
@@ -141,6 +142,6 @@ if ($Errors.Count -eq 0)
 }    
 
 Write-Header -message "`r`n[!!] Found $($Errors.Count) issues!" -isError ($Errors.Count -ne 0)
-$Errors | Sort-Object Project, 'Coverage Type' | Format-Table "Project", @{ Name="Coverage Type"; Expression="Coverage Type"; Width=15 }, @{ Name="Actual"; Expression="Actual"; Width=10 }, @{ Name="Expected"; Expression="Expected"; Width=10 } -AutoSize -Wrap
+$Errors | Sort-Object Project, 'Coverage Type' | Format-Table "Project", @{ Name="Coverage Type"; Expression="Coverage Type"; Width=15 }, @{ Name="Expected"; Expression="Expected"; Width=10 }, @{ Name="Actual"; Expression="$esc[1m$esc[0;31m$($_.Actual)$esc[0m"; Width=10 } -AutoSize -Wrap
 exit -1;
 
