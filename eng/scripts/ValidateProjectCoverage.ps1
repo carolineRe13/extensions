@@ -129,9 +129,9 @@ $CoberturaReport.coverage.packages.package | ForEach-Object {
 
 if ($Kudos.Count -ne 0)
 {
-    Write-Host ""
-    Write-Warning "Good job! The coverage increased"
+    Write-Header -message "`r`nGood job! The coverage increased" -isError $false
     $Kudos | Sort-Object Project | Format-Table "Project", @{ Name="Expected"; Expression="Expected"; Width=10 }, @{ Name="Actual"; Expression="Actual"; Width=10 } -AutoSize -Wrap
+    Write-Host "##vso[task.logissue type=warning;]Good job! The coverage increased, please update your projects"
 }
 
 if ($Errors.Count -eq 0)
